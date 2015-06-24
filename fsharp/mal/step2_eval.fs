@@ -3,12 +3,22 @@ open System
 
 open Mal
 
+let choose_num = function
+    | Types.Number x -> Some x
+    | _ -> None
+
+let num_func f xs =
+    xs 
+    |> Array.choose choose_num 
+    |> Array.reduce f
+    |> fun x -> Types.Number x
+
 let repl_env =
     [
-        "+", (+)
-        "-", (-)
-        "*", ( * )
-        "/", (/)
+        "+", num_func (+)
+        "-", num_func (-)
+        "*", num_func ( * )
+        "/", num_func (/)
     ] 
     |> Map.ofList
 
@@ -35,9 +45,9 @@ EVAL(ast,env):
 let rec eval ast env = ast
 and eval_ast ast env =
     match ast with
-    | Types.Symbol _ -> 
-        try lookup env ast with
-        | _ -> failwith <| "'" + print ast + "' not found"
+    | Types.Symbol x -> 
+        try lookup env x with
+        | _ -> failwith <| "'" + x + "' not found"
     | Types.List xs -> Types.List(List.map (fun x -> eval x env) xs)
     | Types.Vector xs -> Types.Vector(Array.map (fun x -> eval x env) xs)
     | Types.Hash xs -> Types.Hash(Map.map (fun k v -> Types.List([k; eval v env])) xs)

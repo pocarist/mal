@@ -11,7 +11,7 @@ type [<StructuralComparisonAttribute; StructuralEqualityAttribute>] t =
     | Hash of Map<t, t>
     | Atom of t
 and [<CustomEquality; CustomComparison>] fun_t = 
-    { f : (t list -> t) }
+    { f : (t array -> t) }
     override x.Equals(yobj) =  
         match yobj with 
         | :? fun_t as y -> System.Collections.Generic.Comparer.Default.Compare(x, y) = 0

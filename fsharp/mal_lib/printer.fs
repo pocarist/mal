@@ -12,6 +12,6 @@ type Printer() =
             | Lambda x -> sprintf "#<fun:%d>" <| x.GetHashCode() 
             | Keyword x -> ":" + x
             | Vector xs -> "[" + (Array.map f xs |> String.concat " ") + "]"
-            | Hash xs -> "{" + (Map.fold (fun s k v -> s + "(" + f k + " " + f v + ")") "" xs) + "}"
+            | Hash xs -> "{" + (Map.fold (fun s k v -> ("("+f k+" "+f v+")") :: s) [] xs |> String.concat " ") + "}"
             | Atom x -> "(atom " + f x + ")"
         f exp
