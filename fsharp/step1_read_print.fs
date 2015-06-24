@@ -4,9 +4,9 @@ open System
 open Mal
 
 (* stub *)
-let read x = Reader.read_str x
-let eval x = x
-let print x = Printer.pr_str x
+let read str = Reader.read_str str
+let eval ast env = ast
+let print exp = Printer.pr_str exp
 
 let read_line () =
     let line = Console.ReadLine ()
@@ -17,7 +17,7 @@ let read_line () =
 let rep x =
     x
     |> read
-    |> eval
+    |> fun x -> eval x ""
     |> print
 
 [<EntryPoint>]
@@ -30,5 +30,5 @@ let main argv =
         loop "user> "
     with 
         | :? IO.EndOfStreamException -> () //normal exit
-        | _ as e -> eprintfn "%s" <| e.ToString()
+        | _ as e -> printfn "Error: %s" <| e.ToString()
     0
