@@ -20,7 +20,7 @@ $(STEP_BINS): %.exe: %.fs $(MAL_LIB)
 	$(FSC) -r:$(MAL_LIB) $< -o $@
 
 clean:
-	rm -rf $(STEP_BINS) mal.exe
+	rm -rf $(STEP_BINS) $(MAL_LIB) mal.exe
 
 stats: $(MODULES) stepA_mal.fs
 	@wc $^

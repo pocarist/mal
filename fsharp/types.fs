@@ -1,4 +1,5 @@
-module Types
+namespace Mal
+namespace Types
 
 type t =
     Number of int
