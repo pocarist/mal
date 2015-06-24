@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "mal", "mal\mal.fsproj", "{049C0809-DF90-476B-8118-E2CE7D070E0B}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "mal_lib", "mal_lib\mal_lib.fsproj", "{80C4F44E-BABC-4BA7-B82D-22A917780329}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{049C0809-DF90-476B-8118-E2CE7D070E0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{049C0809-DF90-476B-8118-E2CE7D070E0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{049C0809-DF90-476B-8118-E2CE7D070E0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{049C0809-DF90-476B-8118-E2CE7D070E0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80C4F44E-BABC-4BA7-B82D-22A917780329}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80C4F44E-BABC-4BA7-B82D-22A917780329}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80C4F44E-BABC-4BA7-B82D-22A917780329}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80C4F44E-BABC-4BA7-B82D-22A917780329}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
