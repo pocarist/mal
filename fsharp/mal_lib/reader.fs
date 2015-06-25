@@ -60,15 +60,15 @@ type Reader(token_array : string array) =
             next (); Types.String (x.Trim([|'"'|]))
         | Some x when ':' = x.[0] ->
             next (); Types.Keyword (x.Trim([|':'|]))
-        | Some x when ''' = x.[0] ->
+        | Some x when "'" = x ->
             next (); Types.List ([Types.Symbol "quote"; read_form ()]) 
-        | Some x when '`' = x.[0] ->
+        | Some x when "`" = x ->
             next (); Types.List ([Types.Symbol "quasiquote"; read_form ()]) 
-        | Some x when '~' = x.[0] && '@' = x.[1] ->
-            next (); Types.List ([Types.Symbol "splice-unquote"; read_form ()]) 
-        | Some x when '~' = x.[0] ->
+        | Some x when "~" = x ->
             next (); Types.List ([Types.Symbol "unquote"; read_form ()]) 
-        | Some x when '@' = x.[0] ->
+        | Some x when "~@" = x ->
+            next (); Types.List ([Types.Symbol "splice-unquote"; read_form ()]) 
+        | Some x when "@" = x ->
             next (); Types.List ([Types.Symbol "deref"; read_form ()]) 
         | Some x when '^' = x.[0] ->
             next ()
