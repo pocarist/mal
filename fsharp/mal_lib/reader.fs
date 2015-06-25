@@ -21,12 +21,20 @@ type Reader(token_array : string array) =
         match peek () with
         | None -> failwith "read_form : None" 
         | Some "(" -> next(); read_list ()
+        | Some "[" -> next(); read_vector ()
         | Some x -> read_atom ()
     and read_list () =
         let rec loop acc =
             match peek () with
             | None -> failwith "read_list : None"
             | Some ")" -> next (); Types.List(List.rev acc)
+            | Some x -> loop (read_form () :: acc)
+        loop []
+    and read_vector () =
+        let rec loop acc =
+            match peek () with
+            | None -> failwith "read_vector : None"
+            | Some "]" -> next (); Types.Vector(List.rev acc|>Array.ofList)
             | Some x -> loop (read_form () :: acc)
         loop []
     and read_atom () =
