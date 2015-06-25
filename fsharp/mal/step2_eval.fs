@@ -41,7 +41,7 @@ and eval_ast ast env =
         | _ -> failwith <| "'" + x + "' not found"
     | Types.List xs -> Types.List(List.map (fun x -> eval x env) xs)
     | Types.Vector xs -> Types.Vector(Array.map (fun x -> eval x env) xs)
-    | Types.Hash xs -> Types.Hash(Map.map (fun k v -> Types.List([k; eval v env])) xs)
+    | Types.Hash xs -> Types.Hash(Map.map (fun _ v -> eval v env) xs)
     | _ -> ast
 and apply f args =
     match f, args with

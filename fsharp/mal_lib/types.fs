@@ -6,6 +6,7 @@ type [<StructuralComparisonAttribute; StructuralEqualityAttribute>] t =
     | List of t list
     | Symbol of string
     | Lambda of fun_t
+    | String of string
     | Keyword of string
     | Vector of t array
     | Hash of Map<t, t>
