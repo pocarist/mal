@@ -3,22 +3,21 @@ open System
 
 open Mal
 
-let choose_num = function
-    | Types.Number x -> Some x
-    | _ -> None
-
 let num_func f xs =
     xs 
-    |> Array.choose choose_num 
-    |> Array.reduce f
+    |> List.map (function Types.Number x -> x | _ -> failwith "num_func args") 
+    |> List.reduce f
     |> fun x -> Types.Number x
+
+let fun_num f =
+    Types.Lambda ({f=num_func f})
 
 let repl_env =
     [
-        "+", num_func (+)
-        "-", num_func (-)
-        "*", num_func ( * )
-        "/", num_func (/)
+        "+", fun_num (+)
+        "-", fun_num (-)
+        "*", fun_num ( * )
+        "/", fun_num (/)
     ] 
     |> Map.ofList
 
@@ -28,21 +27,13 @@ let lookup env key = Map.find key env
 let read str = Reader.read_str str
 let print exp = Printer.pr_str exp
 
-(*
-eval_ast(ast,env):
-  switch type(ast):
-    symbol:      return lookup(env, ast) OR raise "'" + ast + "' not found"
-    list,vector: return ast.map((x) -> EVAL(x,env))
-    hash:        return ast.map((k,v) -> list(k, EVAL(v,env)))
-    _default_:   return ast
-
-EVAL(ast,env):
-    if not list?(ast): return eval_ast(ast, env)
-    f, args = eval_ast(ast, env)
-    return apply(f, args)
-*)
-
-let rec eval ast env = ast
+let rec eval ast env =
+    match ast with
+    | Types.List _ ->
+        match eval_ast ast env with
+        | Types.List (f::args) -> apply f args
+        | _ -> failwith "eval1"
+    | _ -> eval_ast ast env
 and eval_ast ast env =
     match ast with
     | Types.Symbol x -> 
@@ -52,6 +43,10 @@ and eval_ast ast env =
     | Types.Vector xs -> Types.Vector(Array.map (fun x -> eval x env) xs)
     | Types.Hash xs -> Types.Hash(Map.map (fun k v -> Types.List([k; eval v env])) xs)
     | _ -> ast
+and apply f args =
+    match f, args with
+    | Types.Lambda {f=f'}, _ -> f' args
+    | _ -> failwith "apply"
 
 let read_line () =
     let line = Console.ReadLine ()
