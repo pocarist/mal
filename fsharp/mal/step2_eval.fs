@@ -7,17 +7,17 @@ let num_func f xs =
     xs 
     |> List.map (function Types.Number x -> x | _ -> failwith "num_func args") 
     |> List.reduce f
-    |> fun x -> Types.Number x
+    |> Types.Number
 
-let fun_num f =
-    Types.Lambda ({f=num_func f})
+let make_lambda f =
+    Types.Lambda ({f=f})
 
 let repl_env =
     [
-        "+", fun_num (+)
-        "-", fun_num (-)
-        "*", fun_num ( * )
-        "/", fun_num (/)
+        "+", make_lambda (num_func ( + ))
+        "-", make_lambda (num_func ( - ))
+        "*", make_lambda (num_func ( * ))
+        "/", make_lambda (num_func ( / ))
     ] 
     |> Map.ofList
 
