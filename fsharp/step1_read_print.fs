@@ -22,13 +22,15 @@ let rep x =
 
 [<EntryPoint>]
 let main argv =
-    let rec loop prompt =
-        printf "%s" prompt
-        printfn "%s" (rep (read_line ()))
-        loop prompt
-    try
-        loop "user> "
-    with 
-        | :? IO.EndOfStreamException -> () //normal exit
-        | _ as e -> printfn "Error: %s" <| e.ToString()
+    let loop = ref true
+    while !loop do
+        try
+            printf "user> "
+            printfn "%s" (rep (read_line ()))
+        with 
+            | :? IO.EndOfStreamException ->
+                loop := false //normal exit
+            | e ->
+                printfn "Error: %s" <| e.ToString()
+    done
     0
