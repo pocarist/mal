@@ -45,6 +45,7 @@
     <Compile Include="types.fs" />
     <Compile Include="printer.fs" />
     <Compile Include="reader.fs" />
+    <Compile Include="env.fs" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
