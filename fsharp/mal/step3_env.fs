@@ -31,14 +31,13 @@ let rec eval ast (env : Env) =
         let value = eval ast2 env
         env.set ast1 value
         value
+    | Types.List (Types.Symbol "let*" :: Types.Vector(bindings) :: body :: []) ->
+        let let_env = new Env(env)
+        bind let_env (List.ofArray bindings)
+        eval body let_env
     | Types.List (Types.Symbol "let*" :: Types.List(bindings) :: body :: []) ->
         let let_env = new Env(env)
-        let rec loop = function
-            | sym :: expr :: rest ->
-                let_env.set sym (eval expr let_env)
-                loop rest
-            | _ -> ()
-        loop bindings 
+        bind let_env bindings 
         eval body let_env
     | Types.List _ ->
         match eval_ast ast env with
@@ -58,6 +57,11 @@ and apply f args =
     match f, args with
     | Types.Lambda {f=f'}, _ -> f' args
     | _ -> failwith "apply"
+and bind env = function
+    | sym :: expr :: rest ->
+        env.set sym (eval expr env)
+        bind env rest
+    | _ -> ()
 
 let read_line () =
     let line = Console.ReadLine ()
