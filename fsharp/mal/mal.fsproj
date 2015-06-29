@@ -55,7 +55,7 @@
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
     <None Include="App.config" />
-    <Compile Include="step3_env.fs" />
+    <Compile Include="step4_if_fn_do.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
