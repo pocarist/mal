@@ -9,8 +9,8 @@ type Env(outer : Env option, data) =
 
     new(binds, exprs, ?outer : Env) =
         let rec loop m = function
-            | Types.Symbol bx :: bs, e :: es -> loop (Map.add bx e m) (bs, es)
             | Types.Symbol "&" :: Types.Symbol bx :: [], es -> Map.add bx (Types.List es) m
+            | Types.Symbol bx :: bs, e :: es -> loop (Map.add bx e m) (bs, es)
             | _ -> m
         let data = loop Map.empty (binds, exprs)
         new Env(outer, ref data)
