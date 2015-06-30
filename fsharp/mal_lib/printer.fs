@@ -15,4 +15,6 @@ type Printer() =
             | Vector xs -> "[" + (Array.map f xs |> String.concat " ") + "]"
             | Hash xs -> "{" + (Map.fold (fun s k v -> (f k+" "+f v) :: s) [] xs |> String.concat " ") + "}"
             | Atom x -> "(atom " + f x + ")"
+            | Nil -> "nil"
+            | Bool x -> if x then "true" else "false"
         f exp

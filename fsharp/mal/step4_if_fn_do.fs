@@ -9,8 +9,8 @@ let num_func f xs =
     |> List.reduce f
     |> Types.Number
 
-let make_lambda f =
-    Types.Lambda ({f=f})
+let make_lambda fn =
+    Types.Lambda (Types.Fun fn)
 
 let repl_env =
     [
@@ -39,6 +39,31 @@ let rec eval ast (env : Env) =
         let let_env = new Env(env)
         bind let_env bindings 
         eval body let_env
+    | Types.List (Types.Symbol "do" :: rest) ->
+        let rec loop ret = function
+            | ast :: rest ->
+                let ret = eval_ast ast env
+                loop ret rest
+            | [] -> ret
+        loop Types.Nil rest
+    | Types.List (Types.Symbol "if" :: cond :: t_expr :: f_expr :: []) ->
+        match eval_ast cond env with
+        | Types.Nil
+        | Types.Bool(false) -> eval_ast f_expr env
+        | _ -> eval_ast t_expr env
+    | Types.List (Types.Symbol "if" :: cond :: t_expr :: []) ->
+        match eval_ast cond env with
+        | Types.Nil
+        | Types.Bool(false) -> Types.Nil
+        | _ -> eval_ast t_expr env
+    | Types.List (Types.Symbol "fn*" :: Types.Vector(binds) :: body :: []) ->
+        let fn args =
+            eval body (new Env(List.ofArray binds, args, env))
+        Types.Lambda (Types.Fun fn)
+    | Types.List (Types.Symbol "fn*" :: Types.List(binds) :: body :: []) ->
+        let fn args =
+            eval body (new Env(binds, args, env))
+        Types.Lambda (Types.Fun fn)
     | Types.List _ ->
         match eval_ast ast env with
         | Types.List (f::args) -> apply f args
@@ -55,7 +80,7 @@ and eval_ast ast env =
     | _ -> ast
 and apply f args =
     match f, args with
-    | Types.Lambda {f=f'}, _ -> f' args
+    | Types.Lambda (Types.Fun fn), _ -> fn args
     | _ -> failwith "apply"
 and bind env = function
     | sym :: expr :: rest ->

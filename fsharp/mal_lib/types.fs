@@ -11,13 +11,16 @@ type [<StructuralComparisonAttribute; StructuralEqualityAttribute>] t =
     | Vector of t array
     | Hash of Map<t, t>
     | Atom of t
+    | Nil 
+    | Bool of bool
 and [<CustomEquality; CustomComparison>] fun_t = 
-    { f : (t list -> t) }
+    | Fun of (t list -> t)
     override x.Equals(yobj) =  
         match yobj with 
         | :? fun_t as y -> System.Collections.Generic.Comparer.Default.Compare(x, y) = 0
         | _ -> false 
-    override x.GetHashCode() = x.GetHashCode() // TODO: hash values stored in leaf/branch
+    override x.GetHashCode() =
+        System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(x)
     interface System.IComparable with
         member x.CompareTo yobj =
             match yobj with 
