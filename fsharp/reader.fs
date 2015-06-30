@@ -57,7 +57,8 @@ type Reader(token_array : string array) =
             next (); Types.Number (int x)
         | Some x when '"' = x.[0] ->
             if x.Length = 1 then failwith "expected '\"', got EOF"
-            next (); Types.String (x.Trim([|'"'|]))
+            let x' = x.Substring(1, x.Length-2).Replace("\\\"", "\"").Replace("\\n", "\n")
+            next (); Types.String x'
         | Some x when ':' = x.[0] ->
             next (); Types.Keyword (x.Trim([|':'|]))
         | Some x when "'" = x ->
@@ -75,6 +76,12 @@ type Reader(token_array : string array) =
             let meta = read_form ()
             let form = read_form ()
             Types.List ([Types.Symbol "with-meta"; form; meta])
+        | Some "nil" ->
+            next (); Types.Nil
+        | Some "true" ->
+            next (); Types.Bool true
+        | Some "false" ->
+            next (); Types.Bool false
         | Some x ->
             next (); Types.Symbol x
 
