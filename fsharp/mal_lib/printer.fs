@@ -4,7 +4,9 @@ open System
 open Types
 
 type Printer() =
-    static member pr_str exp sep print_readably =
+    static member pr_str (exp, ?sep, ?print_readably) =
+        let sep = defaultArg sep " "
+        let print_readably = defaultArg print_readably true
         let escape (x : string) = x.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\n", "\\n")
         let rec f = function
             | Number x -> string x

@@ -8,7 +8,7 @@ let repl_env =
 
 (* stub *)
 let read str = Reader.read_str str
-let print exp = Printer.pr_str exp " " true
+let print exp = Printer.pr_str exp
 
 let rec eval ast (env : Env) =
     match ast with

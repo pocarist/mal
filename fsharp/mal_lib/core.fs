@@ -25,9 +25,9 @@ module Core =
             "<=", make_lambda (Types.Bool << function Types.Number a :: Types.Number b :: [] -> a<=b | _ -> false)
             ">", make_lambda (Types.Bool << function Types.Number a :: Types.Number b :: [] -> a>b | _ -> false)
             ">=", make_lambda (Types.Bool << function Types.Number a :: Types.Number b :: [] -> a>=b | _ -> false)
-            "pr-str", make_lambda (Types.String << fun xs -> Printer.pr_str (Types.List xs) " " true)
-            "str", make_lambda (Types.String << fun xs -> Printer.pr_str (Types.List xs) "" false)
-            "prn", make_lambda (fun xs -> Printer.pr_str (Types.List xs) " " true |> Printf.printfn "%s"; Types.Nil)
-            "println", make_lambda (fun xs -> Printer.pr_str (Types.List xs) " " false |> Printf.printfn "%s"; Types.Nil)
+            "pr-str", make_lambda (Types.String << fun xs -> Printer.pr_str (Types.List xs, " ", true))
+            "str", make_lambda (Types.String << fun xs -> Printer.pr_str (Types.List xs, "", false))
+            "prn", make_lambda (fun xs -> Printer.pr_str (Types.List xs, " ", true) |> Printf.printfn "%s"; Types.Nil)
+            "println", make_lambda (fun xs -> Printer.pr_str (Types.List xs, " ", false) |> Printf.printfn "%s"; Types.Nil)
         ]
         |> Map.ofList
