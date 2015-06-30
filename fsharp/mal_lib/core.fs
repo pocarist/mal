@@ -10,6 +10,12 @@ module Core =
     let make_lambda fn =
         Types.Lambda ({f=fn})
 
+    let equal x y =
+        match x, y with
+        | Types.List a, Types.Vector b -> a = List.ofArray b
+        | Types.Vector a, Types.List b -> List.ofArray a = b
+        | _ -> x = y
+
     let ns =
         [
             "+", make_lambda (fun_num ( + ))
@@ -18,9 +24,9 @@ module Core =
             "/", make_lambda (fun_num ( / ))
             "list", make_lambda (Types.List)
             "list?", make_lambda (Types.Bool << function Types.List _ :: _ -> true | _ -> false)
-            "empty?", make_lambda (Types.Bool << function Types.List ([]) :: _ -> true | _ -> false)
-            "count", make_lambda (Types.Number << function Types.List xs :: _ -> xs.Length | _ -> 0)
-            "=", make_lambda (Types.Bool << function a :: b :: [] -> a=b | _ -> false)
+            "empty?", make_lambda (Types.Bool << function Types.List ([]) :: _ -> true | Types.Vector ([||]) :: _ -> true | _ -> false)
+            "count", make_lambda (Types.Number << function Types.List xs :: _ -> xs.Length | Types.Vector xs :: _ -> xs.Length | _ -> 0)
+            "=", make_lambda (Types.Bool << function a :: b :: [] -> equal a b | _ -> false)
             "<", make_lambda (Types.Bool << function Types.Number a :: Types.Number b :: [] -> a<b | _ -> false)
             "<=", make_lambda (Types.Bool << function Types.Number a :: Types.Number b :: [] -> a<=b | _ -> false)
             ">", make_lambda (Types.Bool << function Types.Number a :: Types.Number b :: [] -> a>b | _ -> false)

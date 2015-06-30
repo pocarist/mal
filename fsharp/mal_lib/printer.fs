@@ -15,7 +15,7 @@ type Printer() =
             | Lambda x -> sprintf "#<fun:%x>" <| x.GetHashCode() 
             | String x ->
                 if print_readably then "\"" + escape x + "\""
-                else "\"" + x + "\""
+                else x
             | Keyword x -> ":" + x
             | Vector xs -> "[" + (Array.map f xs |> String.concat sep) + "]"
             | Hash xs -> "{" + (Map.fold (fun s k v -> (f k+" "+f v) :: s) [] xs |> String.concat sep) + "}"
