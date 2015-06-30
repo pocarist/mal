@@ -75,6 +75,12 @@ type Reader(token_array : string array) =
             let meta = read_form ()
             let form = read_form ()
             Types.List ([Types.Symbol "with-meta"; form; meta])
+        | Some "nil" ->
+            next (); Types.Nil
+        | Some "true" ->
+            next (); Types.Bool true
+        | Some "false" ->
+            next (); Types.Bool false
         | Some x ->
             next (); Types.Symbol x
 

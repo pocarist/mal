@@ -1,7 +1,7 @@
 namespace Mal
 namespace Types
 
-type [<StructuralComparisonAttribute; StructuralEqualityAttribute>] t =
+type t =
     | Number of int
     | List of t list
     | Symbol of string
@@ -14,7 +14,7 @@ type [<StructuralComparisonAttribute; StructuralEqualityAttribute>] t =
     | Nil 
     | Bool of bool
 and [<CustomEquality; CustomComparison>] fun_t = 
-    | Fun of (t list -> t)
+    { f : (t list -> t) }
     override x.Equals(yobj) =  
         match yobj with 
         | :? fun_t as y -> System.Collections.Generic.Comparer.Default.Compare(x, y) = 0

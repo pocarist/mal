@@ -3,27 +3,12 @@ open System
 
 open Mal
 
-let num_func f xs =
-    xs 
-    |> List.map (function Types.Number x -> x | _ -> failwith "num_func args") 
-    |> List.reduce f
-    |> Types.Number
-
-let make_lambda fn =
-    Types.Lambda (Types.Fun fn)
-
 let repl_env =
-    [
-        Types.Symbol "+", make_lambda (num_func ( + ))
-        Types.Symbol "-", make_lambda (num_func ( - ))
-        Types.Symbol "*", make_lambda (num_func ( * ))
-        Types.Symbol "/", make_lambda (num_func ( / ))
-    ] 
-    |> List.fold (fun (env:Env) (k,v) -> env.set k v; env) (new Env())
+    new Env(None, ref Core.ns)
 
 (* stub *)
 let read str = Reader.read_str str
-let print exp = Printer.pr_str exp
+let print exp = Printer.pr_str exp " " true
 
 let rec eval ast (env : Env) =
     match ast with
@@ -41,29 +26,27 @@ let rec eval ast (env : Env) =
         eval body let_env
     | Types.List (Types.Symbol "do" :: rest) ->
         let rec loop ret = function
-            | ast :: rest ->
-                let ret = eval_ast ast env
-                loop ret rest
+            | ast :: rest -> loop (eval ast env) rest
             | [] -> ret
         loop Types.Nil rest
     | Types.List (Types.Symbol "if" :: cond :: t_expr :: f_expr :: []) ->
-        match eval_ast cond env with
+        match eval cond env with
         | Types.Nil
-        | Types.Bool(false) -> eval_ast f_expr env
-        | _ -> eval_ast t_expr env
+        | Types.Bool(false) -> eval f_expr env
+        | _ -> eval t_expr env
     | Types.List (Types.Symbol "if" :: cond :: t_expr :: []) ->
-        match eval_ast cond env with
+        match eval cond env with
         | Types.Nil
         | Types.Bool(false) -> Types.Nil
-        | _ -> eval_ast t_expr env
+        | _ -> eval t_expr env
     | Types.List (Types.Symbol "fn*" :: Types.Vector(binds) :: body :: []) ->
         let fn args =
             eval body (new Env(List.ofArray binds, args, env))
-        Types.Lambda (Types.Fun fn)
+        Types.Lambda ({f=fn})
     | Types.List (Types.Symbol "fn*" :: Types.List(binds) :: body :: []) ->
         let fn args =
             eval body (new Env(binds, args, env))
-        Types.Lambda (Types.Fun fn)
+        Types.Lambda ({f=fn})
     | Types.List _ ->
         match eval_ast ast env with
         | Types.List (f::args) -> apply f args
@@ -79,8 +62,8 @@ and eval_ast ast env =
     | Types.Hash xs -> Types.Hash(Map.map (fun _ v -> eval v env) xs)
     | _ -> ast
 and apply f args =
-    match f, args with
-    | Types.Lambda (Types.Fun fn), _ -> fn args
+    match f with
+    | Types.Lambda ({f=fn}) -> fn args
     | _ -> failwith "apply"
 and bind env = function
     | sym :: expr :: rest ->
@@ -88,20 +71,17 @@ and bind env = function
         bind env rest
     | _ -> ()
 
+let rep str = print (eval (read str) repl_env)
+
 let read_line () =
     let line = Console.ReadLine ()
     if line = null then
         raise (new IO.EndOfStreamException())
     else line
 
-let rep x =
-    x
-    |> read
-    |> fun x -> eval x repl_env
-    |> print
-
 [<EntryPoint>]
 let main argv =
+    rep("(def! not (fn* (a) (if a false true)))") |> ignore
     let loop = ref true
     while !loop do
         try
