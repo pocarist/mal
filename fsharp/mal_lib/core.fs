@@ -25,9 +25,9 @@ module Core =
             "<=", make_lambda (Types.Bool << function Types.Number a :: Types.Number b :: [] -> a<=b | _ -> false)
             ">", make_lambda (Types.Bool << function Types.Number a :: Types.Number b :: [] -> a>b | _ -> false)
             ">=", make_lambda (Types.Bool << function Types.Number a :: Types.Number b :: [] -> a>=b | _ -> false)
-            "pr-str", make_lambda (Types.String << fun xs -> xs |> List.map (fun x -> Printer.pr_str(x, " ", true)) |> String.concat " " )
-            "str", make_lambda (Types.String << fun xs -> xs |> List.map (fun x -> Printer.pr_str(x, "", false)) |> String.concat " " )
-            "prn", make_lambda (fun xs -> xs |> List.map (fun x -> Printer.pr_str(x, " ", true)) |> String.concat " " |> Printf.printfn "%s"; Types.Nil)
-            "println", make_lambda (fun xs -> xs |> List.map (fun x -> Printer.pr_str(x, " ", false)) |> String.concat " " |> Printf.printfn "%s"; Types.Nil)
+            "pr-str", make_lambda (Types.String << fun xs -> xs |> List.map (fun x -> Printer.pr_str(x, true)) |> String.concat " " )
+            "str", make_lambda (Types.String << fun xs -> xs |> List.map (fun x -> Printer.pr_str(x, false)) |> String.concat "" )
+            "prn", make_lambda (fun xs -> xs |> List.map (fun x -> Printer.pr_str(x, true)) |> String.concat " " |> Printf.printfn "%s"; Types.Nil)
+            "println", make_lambda (fun xs -> xs |> List.map (fun x -> Printer.pr_str(x, false)) |> String.concat " " |> Printf.printfn "%s"; Types.Nil)
         ]
         |> Map.ofList
